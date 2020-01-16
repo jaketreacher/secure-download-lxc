@@ -1,15 +1,5 @@
 #! /bin/bash
 
-# Create users and config directories
-function setup_app () {
-  local daemon=$1
-  [ -z "$2" ] && local directory=$1 || local directory=$2
-
-  useradd -r $daemon
-  mkdir /config/$directory
-  chown $daemon:$daemon /config/$directory
-}
-
 # Common
 mkdir /config
 apt-get update
@@ -24,7 +14,7 @@ apt-get install ufw -y
 # Deluge
 add-apt-repository ppa:deluge-team/ppa -y
 apt-get install deluged deluge-web -y
-setup_app deluge
+mkdir /config/deluge
 
 # Mono
 apt-get install gnupg ca-certificates
@@ -38,22 +28,17 @@ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0xA236C58F409091A18ACA5
 echo "deb http://apt.sonarr.tv/ master main" | tee /etc/apt/sources.list.d/sonarr.list
 apt-get update
 apt-get install nzbdrone -y
-setup_app sonarr
-chown -R sonarr:sonarr /opt/NzbDrone
+mkdir /config/sonarr
 
 # Radarr 
 curl -L -O $( curl -s https://api.github.com/repos/Radarr/Radarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 )
 tar -xvzf Radarr.develop.*.linux.tar.gz
-mv Radarr /opt
-setup_app radarr
-chown -R radarr:radarr /opt/Radarr
+mkdir /config/radarr
 
 # Jackett
 curl -L -O $( curl -s https://api.github.com/repos/Jackett/Jackett/releases | grep LinuxAMDx64.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 )
 tar -zxvf Jackett.*.tar.gz
-mv Jackett /opt
-setup_app jackett Jackett
-chown -R jackett:jackett /opt/Jackett
+mkdir /config/Jackett
 
 # Copy install scripts and enable services
 rsync -a ./etc/ /etc/
