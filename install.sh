@@ -22,7 +22,7 @@ apt-get install openvpn -y
 apt-get install ufw -y
 
 # Deluge
-add-apt-repository ppa:deluge-team/ppa -y
+add-apt-repository ppa:deluge-team/stable -y
 apt-get install deluged deluge-web -y
 setup_app deluge
 
